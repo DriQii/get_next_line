@@ -19,6 +19,15 @@ typedef struct s_line
     char *str;
 } t_line;
 
+typedef struct s_index
+{
+    int i;
+    int j;
+    int k;
+} t_index;
+
+
+
 t_list	*ft_lstnew(void *content);
 char *get_next_line(int fd);
 int	ft_lstsize(t_list *lst);
