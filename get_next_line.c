@@ -1,7 +1,9 @@
 
 #include "get_next_line.h"
 
-# define BUFFER_SIZE 25
+# define BUFFER_SIZE 6
+
+static char rest[BUFFER_SIZE + 1];
 
 int check_buff(char *buff, size_t size)
 {
@@ -15,66 +17,73 @@ int check_buff(char *buff, size_t size)
             return (1);
     return (0);
 }
-static char rest[BUFFER_SIZE + 1];
+
 
 t_list *alloc_next_line(int fd)
 {
     t_line line;
     t_list  *startline;
-    int i;
+    t_index index;
+    char *temp;
+    
 
-    i = 0;
+    index.i = 0;
+    index.j = 0;
+    line.list = NULL;
+    temp = (char *)malloc(sizeof(char) * BUFFER_SIZE  + 1);
+    ft_strlcpy(temp, rest, BUFFER_SIZE + 1);
     line.buffer = (char *)malloc(sizeof(char) * BUFFER_SIZE  + 1);
-    if (rest)
+    if (rest[0])
     {
-        printf("rest = %s\n", rest);
-        while (rest[i] != '\n' && i < BUFFER_SIZE)
-            i++;
-        if (i == BUFFER_SIZE)
-            i = 0;
-        line.list = ft_lstnew(&rest[i]);
+        //printf("rest = %s\n", rest);
+        while (temp[index.i] != '\n' && index.i < BUFFER_SIZE)
+            index.i++;
+        if (index.i == BUFFER_SIZE)
+            index.i = 0;
+        line.list = ft_lstnew(&temp[index.i + 1]);
         line.buffer = (char *)malloc(sizeof(char) * BUFFER_SIZE);
         startline = line.list;
     }
-    line.list = NULL;
     while(read(fd, line.buffer, BUFFER_SIZE))
     {
-        if (!line.list)
+        if (!line.list && !rest[0])
         {
             line.list = ft_lstnew(line.buffer);
             line.buffer = (char *)malloc(sizeof(char) * BUFFER_SIZE);
             startline = line.list;
         }
-        else
+        else if(!check_buff(line.buffer, BUFFER_SIZE))
         {
+            
             line.list->next = ft_lstnew(line.buffer);
             line.list = line.list->next;
-        }
-        if(!check_buff(line.buffer, BUFFER_SIZE))
-        {
-            line.list->next = ft_lstnew(line.buffer);
             line.buffer = (char *)malloc(sizeof(char) * BUFFER_SIZE);
         }
         else
         {
-            i = 0;
-            while (i < BUFFER_SIZE)
+            index.i = 0;
+            while (line.buffer[index.i] != '\n' && index.i < BUFFER_SIZE)
+                index.i++;
+            index.i++;
+            if (index.i >= BUFFER_SIZE)
+                index.i = 0;
+            while (index.i < BUFFER_SIZE)
             {
-                rest[i] = line.buffer[i];
-                i++;
+                rest[index.j++] = line.buffer[index.i++];
+                //index.i++;
+                printf("c = %c\n", rest[index.j]);
             }
-            rest[i] = '\0';
-
-
+            rest[index.i] = '\0';
             break;
         }
     }
-
+    printf("startline = %s\n", startline->content);
     return (startline);
 }
 
 char *write_next_line(t_list *line)
 {
+    printf("write first content =%s\n", line->content);
     int         len;
     int         cursor;
     t_index     index;
@@ -83,16 +92,15 @@ char *write_next_line(t_list *line)
 
     cursor = 0;
     index.j = 0;
-    len = ft_lstsize(line) * BUFFER_SIZE + 1;
+    index.k = ft_lstsize(line);
+    len = index.k * BUFFER_SIZE + 1;
     str = malloc(sizeof(char) * len + 1);
     while (line)
     {
         index.i = 0;
-        while(index.i < BUFFER_SIZE && line->content[index.i - 1] != '\n')
-        {
+        while(index.i < BUFFER_SIZE && line->content[index.i] != '\n' && line->content[index.i] != '\0')
+        {   
             str[index.i + cursor] = line->content[index.i];
-            if(line->content[index.i - 1] == '\n')
-                break;
             index.i++;
         }
         cursor += index.i;
@@ -118,7 +126,11 @@ int main(int argc, char **argv)
     t_line line;
 
     line.str = get_next_line(fd);
-    printf("%s\n", line.str);
+    printf("line = %s\n", line.str);
+    line.str = get_next_line(fd);
+    printf("line = %s\n", line.str);
+    line.str = get_next_line(fd);
+    printf("line = %s\n", line.str);
     line.str = get_next_line(fd);
     printf("%s\n", line.str);
     line.str = get_next_line(fd);
