@@ -7,19 +7,6 @@
 # include <string.h>
 # include <unistd.h>
 
-typedef struct s_list
-{
-    const char *content;
-    struct s_list *next;
-}   t_list;
-
-typedef struct s_line
-{
-    t_list *list;
-    char *buffer;
-    char *str;
-} t_line;
-
 typedef struct s_index
 {
     int i;
@@ -27,13 +14,13 @@ typedef struct s_index
     int k;
 } t_index;
 
-
-
-t_list	*ft_lstnew(void *content);
 char *get_next_line(int fd);
-int	ft_lstsize(t_list *lst);
-size_t	ft_strlcpy(char *dest, const char *src, size_t size);
-char	*ft_strdup(const char *src);
 size_t	ft_strlen(const char *str);
+void *ft_realloc(void *ptr, size_t size);
+void	*ft_memcpy(void *dest, const void *src, size_t len);
 
+#endif
+
+#ifndef BUFFER_SIZE
+# define BUFFER_SIZE 6
 #endif
