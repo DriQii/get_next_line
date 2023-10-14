@@ -34,8 +34,12 @@ void write_rest(char **rest, int fd, char *buffer)
         free(rest[fd]);
     rest[fd] = malloc(sizeof(char) * (BUFFER_SIZE - i + 1));
     j = i;
-    while(k - i < BUFFER_SIZE)
-        rest[fd][k++] = buffer[j++];
+    while(k - i < BUFFER_SIZE - 1)
+    {
+        rest[fd][k] = buffer[j];
+        j++;
+        k++;
+    }
 }
 char *ft_trim_line(char *str)
 {
@@ -43,12 +47,15 @@ char *ft_trim_line(char *str)
     char *newstr;
 
     i = 0;
+    if (!str)
+        return (NULL);
     while (str[i] != '\n' && str[i])
         i++;
-    newstr = (char *)malloc(sizeof(char) * (i + 1));
+    newstr = (char *)malloc(sizeof(char) * (i + 2));
     if(!newstr)
             return (NULL);
     ft_memcpy(newstr, str, i + 1);
+    newstr[i + 1] = '\0';
     free(str);
     return (newstr);
 }
@@ -59,11 +66,11 @@ char *get_next_line(int fd)
     static char *rest[BUFFER_SIZE];
     size_t cursor;
     char *str;
-    char *tempstr;
+    int i;
 
+    i = 1;
     if (fd < 0)
         return(NULL);
-    tempstr = NULL;
     str = NULL;
     cursor = 0;
     if (rest[fd])
@@ -74,8 +81,12 @@ char *get_next_line(int fd)
         ft_memcpy(str, rest[fd], ft_strlen(rest[fd]));
         cursor += ft_strlen(rest[fd]);
     }
-    while(read(fd, buffer, BUFFER_SIZE))
+    
+    while(i != 0)
     {
+        i = read(fd, buffer, BUFFER_SIZE);
+        if (i == 0)
+            return (NULL);           
         str = ft_realloc(str, BUFFER_SIZE + cursor);
         if(!str)
             return (NULL);
@@ -88,7 +99,7 @@ char *get_next_line(int fd)
     write_rest(rest, fd, buffer);
     return(str);
 }
-
+/*
 int main(int argc, char **argv)
 {
     int fd = open(argv[1], O_RDONLY);
@@ -97,4 +108,4 @@ int main(int argc, char **argv)
     printf("%s", get_next_line(fd));
     printf("%s", get_next_line(fd));
     printf("%s", get_next_line(fd));
-}
+}*/
