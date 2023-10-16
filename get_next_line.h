@@ -22,5 +22,5 @@ void	*ft_memcpy(void *dest, const void *src, size_t len);
 #endif
 
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE 6
+# define BUFFER_SIZE 1000000
 #endif
