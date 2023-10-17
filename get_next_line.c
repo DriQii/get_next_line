@@ -50,12 +50,12 @@ char *ft_trim_line(char *str)
     while (str[i] != '\n' && str[i])
         i++;
     //printf("i = %d\n", i);
-    newstr = (char *)malloc(sizeof(char) * (i + 2));
+    newstr = (char *)ft_calloc(sizeof(char) , (i + 2));
     if(!newstr)
             return (NULL);
-    ft_memcpy(newstr, str, i + 2);
-    if(newstr[i + 1])
-        newstr[i + 1] = '\0';
+    //if (i == 0)
+        //i--;
+    ft_memcpy(newstr, str, i + 1);
     if (str)
         free(str);
     return (newstr);
@@ -71,12 +71,11 @@ char *get_next_line(int fd)
     i = 1;
     if (fd < 0 || !fd)
         return(NULL);
-    
     str = NULL;
     cursor = 0;
     if (rest[fd][0] != '\0')
     { 
-        str = malloc(sizeof(char) * (ft_strlen(rest[fd])));
+        str = (char *)ft_calloc(sizeof(char) , (ft_strlen(rest[fd])));
         if(!str)
             return (NULL);
         
@@ -85,8 +84,7 @@ char *get_next_line(int fd)
         
     }
     if(ft_chektab(rest[fd]) != -1)
-    {
-        
+    {   
         str = ft_trim_line(str);
         write_rest(rest, fd, rest[fd]);
         return (str);
@@ -110,16 +108,13 @@ char *get_next_line(int fd)
     write_rest(rest, fd, buffer);
     return(str);
 }
-
+/*
 int main(int argc, char **argv)
 {
     int fd = open(argv[1], O_RDONLY);
     char    *str = get_next_line(fd);
     printf("%s", str);
     free(str);
-    /*str = get_next_line(fd);
-    printf("%s", str);
-    free(str);
     str = get_next_line(fd);
     printf("%s", str);
     free(str);
@@ -131,5 +126,8 @@ int main(int argc, char **argv)
     free(str);
     str = get_next_line(fd);
     printf("%s", str);
-    free(str);*/
-}
+    free(str);
+    str = get_next_line(fd);
+    printf("%s", str);
+    free(str);
+}*/

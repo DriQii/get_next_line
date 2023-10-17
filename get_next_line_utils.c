@@ -6,7 +6,7 @@
 /*   By: evella <evella@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/10 14:00:52 by evella            #+#    #+#             */
-/*   Updated: 2023/10/17 15:35:01 by evella           ###   ########.fr       */
+/*   Updated: 2023/10/17 18:57:53 by evella           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,14 @@ void *ft_realloc(void *ptr, size_t size)
 	newptr = NULL;
 	if(ptr)
 	{
-		newptr = malloc(size);
+		newptr = ft_calloc(1, size);
 		if(!newptr)
 			return (NULL);
 		ft_memcpy(newptr, ptr, size - BUFFER_SIZE);
 		free(ptr);
 	}
 	else
-		newptr = malloc(size);
+		newptr = ft_calloc(1, size);
 	return(newptr);
 
 }
@@ -66,4 +66,15 @@ void	*ft_memset(void *str, int c, size_t count)
 		*temp++ = c;
 	}
 	return (str);
+}
+
+void	*ft_calloc(size_t count, size_t size)
+{
+	void	*temp;
+
+	temp = malloc(count * size);
+	if (!temp)
+		return (NULL);
+	ft_memset(temp, '\0',count * size);
+	return ((void *)temp);
 }
