@@ -7,7 +7,7 @@ int ft_chektab(char *buffer)
     int i;
 
     i = 0;
-    while(i < BUFFER_SIZE && buffer[i])
+    while(i < BUFFER_SIZE)
     {
         if(buffer[i] == '\n')
             return(i);
@@ -46,13 +46,16 @@ char *ft_trim_line(char *str)
     i = 0;
     if (!str)
         return (NULL);
+        //printf("str = %s\n", str);
     while (str[i] != '\n' && str[i])
         i++;
+    //printf("i = %d\n", i);
     newstr = (char *)malloc(sizeof(char) * (i + 2));
     if(!newstr)
             return (NULL);
-    ft_memcpy(newstr, str, i + 1);
-    newstr[i + 1] = '\0';
+    ft_memcpy(newstr, str, i + 2);
+    if(newstr[i + 1])
+        newstr[i + 1] = '\0';
     if (str)
         free(str);
     return (newstr);
@@ -68,34 +71,40 @@ char *get_next_line(int fd)
     i = 1;
     if (fd < 0 || !fd)
         return(NULL);
+    
     str = NULL;
     cursor = 0;
     if (rest[fd][0] != '\0')
-    {
+    { 
         str = malloc(sizeof(char) * (ft_strlen(rest[fd])));
         if(!str)
             return (NULL);
+        
         ft_memcpy(str, rest[fd], ft_strlen(rest[fd]));
         cursor += ft_strlen(rest[fd]);
+        
     }
     if(ft_chektab(rest[fd]) != -1)
     {
+        
         str = ft_trim_line(str);
         write_rest(rest, fd, rest[fd]);
         return (str);
     }
     while(i != 0)
     {
+        ft_memset(buffer, '\0', BUFFER_SIZE);
         i = read(fd, buffer, BUFFER_SIZE);
-        if (i == 0)
-            return (NULL);          
+        if (i <= 0)
+            return (ft_trim_line(str));
         str = ft_realloc(str, BUFFER_SIZE + cursor);
         if(!str)
             return (NULL);
         ft_memcpy(str + cursor, buffer, BUFFER_SIZE);
         cursor += BUFFER_SIZE;
         if(ft_chektab(buffer) != -1)
-            break;
+                break;
+        
     }
     str = ft_trim_line(str);
     write_rest(rest, fd, buffer);
@@ -105,7 +114,10 @@ char *get_next_line(int fd)
 int main(int argc, char **argv)
 {
     int fd = open(argv[1], O_RDONLY);
-    char    *str = get_next_line(NULL);
+    char    *str = get_next_line(fd);
+    printf("%s", str);
+    free(str);
+    /*str = get_next_line(fd);
     printf("%s", str);
     free(str);
     str = get_next_line(fd);
@@ -119,8 +131,5 @@ int main(int argc, char **argv)
     free(str);
     str = get_next_line(fd);
     printf("%s", str);
-    free(str);
-    str = get_next_line(fd);
-    printf("%s", str);
-    free(str);
+    free(str);*/
 }

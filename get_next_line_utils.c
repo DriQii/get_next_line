@@ -6,7 +6,7 @@
 /*   By: evella <evella@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/10 14:00:52 by evella            #+#    #+#             */
-/*   Updated: 2023/10/16 12:52:19 by evella           ###   ########.fr       */
+/*   Updated: 2023/10/17 15:35:01 by evella           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,16 @@ size_t	ft_strlen(const char *str)
 		i++;
 	}
 	return (i);
+}
+
+void	*ft_memset(void *str, int c, size_t count)
+{
+	char	*temp;
+
+	temp = str;
+	while (count-- > 0)
+	{
+		*temp++ = c;
+	}
+	return (str);
 }
