@@ -1,116 +1,87 @@
 
 #include "get_next_line.h"
 
-
-int ft_chektab(char *buffer)
+int ft_check_end_line(char *buffer)
 {
     int i;
 
     i = 0;
-    while(i < BUFFER_SIZE)
-    {
-        if(buffer[i] == '\n')
-            return(i);
+    while (buffer[i] != '\n' && buffer[i])
         i++;
-    }
-    return(-1);
+    if (!buffer[i])
+        return(-1);
+    return(i);
 }
-
-void write_rest(char rest[4096][BUFFER_SIZE], int fd, char *buffer)
-{
-    int i;
-    int j;
-    int k;
-
-    k = 0;
-    j = 0;
-    i = 0;
-    while (buffer[i] != '\n')
-        i++;
-    if (buffer[i])
-        i++;
-    j = i;
-    while(k + i < BUFFER_SIZE + 1)
-    {
-        rest[fd][k] = buffer[j];
-        j++;
-        k++;
-    }
-    rest[fd][k] = '\0';
-}
-char *ft_trim_line(char *str)
+char *ft_cut_line(char *str)
 {
     int i;
     char *newstr;
 
+    if(!str)
+        return(NULL);
     i = 0;
-    if (!str)
-        return (NULL);
-        //printf("str = %s\n", str);
     while (str[i] != '\n' && str[i])
         i++;
-    //printf("i = %d\n", i);
-    newstr = (char *)ft_calloc(sizeof(char) , (i + 2));
+    if(str[i] == '\n')
+        i++;
+    newstr = ft_calloc(sizeof(char), i + 1);
     if(!newstr)
-            return (NULL);
-    //if (i == 0)
-        //i--;
-    ft_memcpy(newstr, str, i + 1);
-    if (str)
-        free(str);
-    return (newstr);
+        return(NULL);
+    ft_memcpy(newstr, str, i);
+    free(str);
+    return(newstr);
+}
+void ft_write_rest(char rest[1024][BUFFER_SIZE + 1], char *buffer, int fd)
+{
+    int i;
+    int j;
+
+    j = 0;
+    i = 0;
+    while(buffer[i] != '\n')
+        i++;
+    while(buffer[i + 1])
+    {
+        rest[fd][j++] = buffer[i + 1];
+        i++;
+    }
 }
 char *get_next_line(int fd)
 {
-    char buffer[BUFFER_SIZE];
-    static char rest[4096][BUFFER_SIZE];
-    size_t cursor;
-    char *str;
-    int i;
+    static char rest[1024][BUFFER_SIZE + 1];
+    char        *str;
+    char        buffer[BUFFER_SIZE + 1];
+    int         oread;
 
-    i = 1;
-    if (fd < 0 || !fd)
-        return(NULL);
+    oread = 1;
     str = NULL;
-    cursor = 0;
-    if (rest[fd][0] != '\0')
-    { 
-        str = (char *)ft_calloc(sizeof(char) , (ft_strlen(rest[fd])));
-        if(!str)
-            return (NULL);
-        
-        ft_memcpy(str, rest[fd], ft_strlen(rest[fd]));
-        cursor += ft_strlen(rest[fd]);
-        
-    }
-    if(ft_chektab(rest[fd]) != -1)
+    if(rest[fd][0])
+        {
+            str = ft_strdup(rest[fd]);
+        }
+    ft_memset(buffer, 0, BUFFER_SIZE + 1);
+    while(ft_check_end_line(buffer) == -1)
     {   
-        str = ft_trim_line(str);
-        write_rest(rest, fd, rest[fd]);
-        return (str);
-    }
-    while(i != 0)
-    {
-        ft_memset(buffer, '\0', BUFFER_SIZE);
-        i = read(fd, buffer, BUFFER_SIZE);
-        if (i <= 0)
-            return (ft_trim_line(str));
-        str = ft_realloc(str, BUFFER_SIZE + cursor);
+        ft_memset(buffer, 0, BUFFER_SIZE + 1);
+        oread = read(fd, buffer, BUFFER_SIZE);
+        if(oread <= 0)
+        {
+            if(str)
+                return(ft_cut_line(str));
+            return(NULL);
+        }
         if(!str)
-            return (NULL);
-        ft_memcpy(str + cursor, buffer, BUFFER_SIZE);
-        cursor += BUFFER_SIZE;
-        if(ft_chektab(buffer) != -1)
-                break;
-        
+            {str = ft_strdup(buffer);}
+        else
+            str = ft_strjoin(str, buffer);
     }
-    str = ft_trim_line(str);
-    write_rest(rest, fd, buffer);
-    return(str);
+    ft_write_rest(rest, buffer, fd);
+    return (ft_cut_line(str));
 }
 /*
 int main(int argc, char **argv)
 {
+    (void)argc;
     int fd = open(argv[1], O_RDONLY);
     char    *str = get_next_line(fd);
     printf("%s", str);
@@ -126,7 +97,7 @@ int main(int argc, char **argv)
     free(str);
     str = get_next_line(fd);
     printf("%s", str);
-    free(str);
+    free(str); 
     str = get_next_line(fd);
     printf("%s", str);
     free(str);

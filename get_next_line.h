@@ -15,14 +15,14 @@ typedef struct s_index
 } t_index;
 
 char *get_next_line(int fd);
-size_t	ft_strlen(const char *str);
-void *ft_realloc(void *ptr, size_t size);
 void	*ft_memcpy(void *dest, const void *src, size_t len);
 void	*ft_memset(void *str, int c, size_t count);
 void	*ft_calloc(size_t count, size_t size);
+char	*ft_strdup(const char *src);
+char	*ft_strjoin(char *s1, char const *s2);
 
 #endif
 
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE 1
+# define BUFFER_SIZE 10
 #endif
