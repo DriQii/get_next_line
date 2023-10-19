@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: evella <evella@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/19 17:01:17 by evella            #+#    #+#             */
-/*   Updated: 2023/10/19 18:08:49 by evella           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "get_next_line.h"
 
@@ -24,11 +13,11 @@ int ft_check_end_line(char *buffer)
     return(i);
 }
 
-void    ft_write_rest(char rest[1024][BUFFER_SIZE + 1], char *buffer, int fd)
+void ft_write_rest(char rest[1024][BUFFER_SIZE + 1], char *buffer, int fd)
 {
-    int     i;
-    int     j;
-    char    *temp;
+    int i;
+    int j;
+    char *temp;
 
     j = 0;
     i = 0;
@@ -48,11 +37,12 @@ void    ft_write_rest(char rest[1024][BUFFER_SIZE + 1], char *buffer, int fd)
     }
     free(temp);
 }
-char    *ft_cut_line(char *str)
+char *ft_cut_line(char *str)
 {
-    int     i;
-    char    *newstr;
+    int i;
+    char *newstr;
 
+    //printf("str = %s", str);
     if(!str)
         return(NULL);
     i = 0;
@@ -80,13 +70,14 @@ char *get_next_line(int fd)
     ft_memset(buffer, 0, BUFFER_SIZE + 1);
     if(rest[fd][0])
         {
+            //printf("rest = %s", rest[fd]);
             str = ft_strdup(rest[fd]);
             ft_write_rest(rest, rest[fd], fd);
             if (ft_check_end_line(str) != -1)
                     return (ft_cut_line(str));  
         }
     while(ft_check_end_line(buffer) == -1)
-    {
+    {   
         ft_memset(buffer, 0, BUFFER_SIZE + 1);
         oread = read(fd, buffer, BUFFER_SIZE);
         if(oread <= 0)
@@ -108,23 +99,22 @@ int main(int argc, char **argv)
 {
     (void)argc;
     int fd = open(argv[1], O_RDONLY);
-    int fd2 = open(argv[2], O_RDONLY);
     char    *str = get_next_line(fd);
     printf("%s", str);
     free(str);
-    str = get_next_line(fd2);
-    printf("%s", str);
-    free(str);
-    str = get_next_line(fd);
-    printf("%s", str);
-    free(str);
-    str = get_next_line(fd2);
-    printf("%s", str);
-    free(str);
     str = get_next_line(fd);
     printf("%s", str);
     free(str);
     str = get_next_line(fd);
     printf("%s", str);
+    str = get_next_line(fd);
+    printf("%s", str);
     free(str);
+    str = get_next_line(fd);
+    printf("%s", str);
+    free(str); 
+    str = get_next_line(fd);
+    printf("%s", str);
+    free(str);
+  
 }*/
