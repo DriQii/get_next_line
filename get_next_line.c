@@ -6,7 +6,7 @@
 /*   By: evella <evella@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/19 17:01:17 by evella            #+#    #+#             */
-/*   Updated: 2023/10/19 18:08:49 by evella           ###   ########.fr       */
+/*   Updated: 2023/10/19 18:19:01 by evella           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,28 +103,3 @@ char *get_next_line(int fd)
     ft_write_rest(rest, buffer, fd);
     return (ft_cut_line(str));
 }
-/*
-int main(int argc, char **argv)
-{
-    (void)argc;
-    int fd = open(argv[1], O_RDONLY);
-    int fd2 = open(argv[2], O_RDONLY);
-    char    *str = get_next_line(fd);
-    printf("%s", str);
-    free(str);
-    str = get_next_line(fd2);
-    printf("%s", str);
-    free(str);
-    str = get_next_line(fd);
-    printf("%s", str);
-    free(str);
-    str = get_next_line(fd2);
-    printf("%s", str);
-    free(str);
-    str = get_next_line(fd);
-    printf("%s", str);
-    free(str);
-    str = get_next_line(fd);
-    printf("%s", str);
-    free(str);
-}*/
