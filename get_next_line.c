@@ -6,7 +6,7 @@
 /*   By: evella <evella@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/19 17:01:17 by evella            #+#    #+#             */
-/*   Updated: 2023/10/19 18:19:01 by evella           ###   ########.fr       */
+/*   Updated: 2023/10/23 10:34:52 by evella           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,8 @@ char *get_next_line(int fd)
     {
         ft_memset(buffer, 0, BUFFER_SIZE + 1);
         oread = read(fd, buffer, BUFFER_SIZE);
+        if (oread == -1)
+            return(NULL);
         if(oread <= 0)
         {
             if(str)

@@ -80,6 +80,8 @@ char *get_next_line(int fd)
     {   
         ft_memset(buffer, 0, BUFFER_SIZE + 1);
         oread = read(fd, buffer, BUFFER_SIZE);
+        if (oread == -1)
+            return(NULL);
         if(oread <= 0)
         {
             if(str)
@@ -105,8 +107,11 @@ int main(int argc, char **argv)
     str = get_next_line(fd);
     printf("%s", str);
     free(str);
+    close(fd);
+    fd = open(argv[1], O_RDONLY);
     str = get_next_line(fd);
     printf("%s", str);
+    free(str);
     str = get_next_line(fd);
     printf("%s", str);
     free(str);
